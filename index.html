@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+        }
+
+        .weather-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 350px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+        }
+
+        .weather-container h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .weather-container p {
+            margin: 10px 0;
+            font-size: 1.2em;
+        }
+
+        .weather-container input {
+            width: 90%;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: none;
+            font-size: 1em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .weather-container button {
+            background: linear-gradient(135deg, #00ff87, #009d55);
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .weather-container button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .error {
+            color: #ff6b6b;
+            margin-top: 15px;
+            font-size: 1em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="weather-container">
+        <h1>Weather App</h1>
+        <input type="text" id="city" placeholder="Enter city name">
+        <p id="location">Location: --</p>
+        <p id="temperature">Temperature: --</p>
+        <p id="condition">Condition: --</p>
+        <button id="fetch-weather">Get Weather</button>
+        <p class="error" id="error"></p>
+    </div>
+
+    <script>
+        document.getElementById('fetch-weather').addEventListener('click', async () => {
+            const apiKey = 'dccdc6377f56abe4d0d6ff884da0855a';
+            const city = document.getElementById('city').value.trim();
+
+            if (!city) {
+                document.getElementById('error').textContent = 'Please enter a city name.';
+                return;
+            }
+
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+
+            try {
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error('Unable to fetch weather data.');
+                }
+
+                const data = await response.json();
+                document.getElementById('location').textContent = `Location: ${data.name}, ${data.sys.country}`;
+                document.getElementById('temperature').textContent = `Temperature: ${data.main.temp}°C`;
+                document.getElementById('condition').textContent = `Condition: ${data.weather[0].description}`;
+                document.getElementById('error').textContent = '';
+            } catch (error) {
+                document.getElementById('error').textContent = error.message;
+            }
+        });
+    </script>
+</body>
+
+</html>
